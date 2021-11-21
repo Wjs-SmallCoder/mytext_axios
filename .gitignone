@@ -1,4 +1,4 @@
 node_modules
 .vscode
 .idea
-/axios.md
+axios.md
