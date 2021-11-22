@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="get()">get</button>
+    <button onclick="post()">post</button>
+    <button onclick="put()">put</button>
+    <button onclick="remove()">delete</button>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.js"></script>
+    <script>
+// 设置默认url 地址(全局)
+        axios.defaults.baseURL = 'http://localhost:3000';
+
+        function get() {
+            // axios.get(url,{params:{}})
+            axios.get(
+                // '/posts?id=1' urlencoded 编码
+                '/posts', // url
+                { // params 
+                    params: {
+                        id: 1
+                    }
+                }
+            ).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function post() {
+            // 页面会刷新(运行在服务器)
+            // axios.post(url,{})
+            axios.post(
+                '/posts',
+                {
+                    title: '123465',
+                    author: 'wywy'
+                }
+
+            ).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function put() {
+            // axios.put(url[, data[, config]])
+            axios.put(
+                // url 需将id 传递过去(params)
+                '/posts/8',
+                {
+                    title: '1',
+                    author: 'x'
+                }
+            ).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function remove() {
+            // 由对应的delete 这里只是展示requeset 的使用方法
+            axios.request(
+                // id 需要用params 传递
+                '/posts/5',
+                {
+                    method: 'DELETE'
+                }
+            ).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+    </script>
+</body>
+</html>

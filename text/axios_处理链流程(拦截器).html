@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        axios.defaults.baseURL = 'http://localhost:3000'
+        // 拦截器 interceptors
+        // 打印顺序 req1 req res res1 成功
+        // 请求拦截器 -> (真正发送请求位置[发送请求后才能够响应]) -> 响应拦截器 -> axios请求
+
+
+        // 请求拦截(处于后面的请求拦截器先触发)
+        
+        // 必须返回config
+
+        // 在真正发送请求执行的回调
+        // 处理请求的配置(data\header等) 检查请求(判断是否可以发送)
+        axios.interceptors.request.use(
+            function(config) {
+                console.log('request success')
+                return config
+                // throw 2 // 抛出异常 打印(请求成功，响应异常，axios 成功) 
+                // 请求并没有发送(页面没有发送请求)
+            },
+            function(error) {
+                return Promise.reject(error)
+            }
+        )
+
+        axios.interceptors.request.use(
+            function(config) {
+                console.log('request1 success')
+                return config
+            }
+        )
+
+        // 响应拦截
+
+        // 可以是response 也可以是response 里面的属性
+
+        // 在得到响应后执行的回调(外层(axios) 得到响应(回调)之前)
+        // 对请求成功数据处理 对请求失败数据处理 
+        axios.interceptors.response.use(
+            function(response) {
+                console.log('response success')
+                return response
+            },
+            function(error) {
+                console.log('response error')
+                return Promise.reject(error)
+            }
+        )
+
+        axios.interceptors.response.use(
+            function(response) {
+                console.log('response1 success')
+                return response
+            },
+            function(error) {
+                console.log('response1 error')
+                return Promise.reject(error)
+            }
+        )
+
+        axios({
+            url: '/posts'
+        }).then(
+            response => {
+                console.log('我是axios 发送成功的回调')
+            },
+            error => {
+                console.log('我是axios 发送失败的回调')
+            }
+        )
+    </script>
+</body>
+</html>

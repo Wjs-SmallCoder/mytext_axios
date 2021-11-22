@@ -53,6 +53,7 @@
         function put() {
             axios({
                 method: 'PUT',
+                // id 通过params 传递过去
                 url: 'http://localhost:3000/posts/2',
                 data: {
                     title: '123',

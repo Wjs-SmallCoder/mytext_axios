@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button id="btn1" onclick="getProducts1()">获取商品1</button>
+    <button id="btn2" onclick="getProducts2()">获取商品2</button>
+    <button id="btn3" onclick="Cancel()">取消请求</button>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        // 需求 自动取消未完成的请求
+
+
+        axios.defaults.baseURL = 'http://localhost:4000'
+
+        // 生成一个标识标记当前请求
+        // 将取消对应请求的函数保存起来
+        let cancel;
+
+        // 请求拦截器
+        axios.interceptors.request.use((config) => {
+            // 有未完成的请求取消
+            if(cancel) {
+                cancel('自动取消')
+            }
+
+            config.cancelToken =  new axios.CancelToken((c) => {
+                cancel = c
+            })
+
+            return config
+        })
+
+        // 响应拦截器
+        axios.interceptors.response.use(
+            response => {
+                cancel = null
+                return response
+            },
+            error => {
+                // axios.isCancel(error) 判断是calcel 取消还是服务器错误
+                if (axios.isCancel(error)) {
+                    alert('取消请求操作' + error.message)
+                } else {
+                    cancel = null
+                    alert('请求错误' + error.message)
+                }
+                return new Promise(() => {}) // 中断promise then 的链式调用
+            }
+        )
+
+        function getProducts1() {
+            
+
+            // 声明取消请求
+            axios.get('/getProducts1').then(
+                // 异步
+                response => {
+                    console.log('response',response)
+                }
+                // error => {
+                //     console.log('error',error.message)
+                // }
+            )
+        }
+
+        function getProducts2() {
+            axios.get('/getProducts2').then(
+                // 异步
+                response => {
+                    console.log('response',response)
+                }
+                // error => {
+                //     console.log('error',error.message)
+                // }
+            )
+        }
+
+        function Cancel() {
+            // 取消请求操作
+            if(cancel) {
+                cancel('强制取消')
+            }
+        }
+    </script>
+</body>
+</html>

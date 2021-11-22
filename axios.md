@@ -1,4 +1,64 @@
 1. axios
+  · 特点
+    基于Promise(能够使用then catch) 异步ajax
+    浏览器端/node 服务器端可使用
+    支持请求/响应拦截
+    请求取消
+    请求/响应数据转换
+    批量发送请求(Promise.All())
+
+  · 前后台交互过程
+    前后应用在浏览器发送http请求(请求报文) 给服务器
+    后台服务器接受处理请求，返回浏览器http 响应(响应报文)
+    浏览器接受响应，解析响应体/调用监视回调
+  
+  · 请求报文
+    请求行： 请求方式\url
+    多个请求头： 一个请求头由name:value ，如Host/Cookie/Content-Type
+    请求体
+
+  · 响应报文
+    响应行： 响应状态码/对应文本
+    多个响应头： 如Content-Type / Set-cookie 头
+    响应体
+
+  · post 请求体文本参数
+    Content-Type: application/x-www-form-urlencoded;charset=utf-8
+      用于键值对参数 参数键值用=连接 参数用&
+      eg name=1&age=2
+
+    Content-Type: application/json;charset=utf-8
+      用于json 字符串参数
+      eg {'name': 1,"age": 2}
+
+    url  2种请求参数
+      query
+        路由path: /xxx
+        请求path：/xxx?name=xx
+        获取参数： request.query.name
+      
+      params 
+        路由path: /xxx/:name
+        请求path：/xxx/name 值
+        获取参数： request.params.name
+
+  · 请求类型
+    GET 从服务器获取数据
+    POST 向服务器添加数据
+    PUT 更新服务器已有数据
+    DELETE 删除服务器数据
+
+  · API
+    REST API restful
+      发送请求CRUD由请求方式决定
+      同一个请求路径可进行多个操作
+      请求方式GET/POST/PUT/DELETE
+
+    非 REST API restless
+      请求方式不决定请求 CRUD
+      一个请求路径对应一个操作
+      一般只有GET/POST
+        测试 json-server 快速搭建 restful 接口
 
 2. ajax
   特殊的http 请求
@@ -48,7 +108,7 @@
    setRequestHeader(name,value) 设置请求头
 
 5. Promise + XHR 封装ajax(简单)
-  · 返回值为Promise 成功resolve 失败error
+  · 返回(return)值为Promise 成功resolve 失败error
   · 能处理多种请求(get/post/put/delete)
   · 函数参数为一个配置对象 {
       url: '',

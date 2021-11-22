@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <!-- axios.create(config) -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        // 根据配置创建一个axios 每个axios 都有独立的配置
+        // 新的axios 没有取消请求 和批量发送请求的方法，其他语法都一致
+        // 需求：  项目需要(部分接口配置与另一部分接口配置不一致)(请求路径不同)
+        // 解决：  创建两个新的axios 每个都有独有配置 分别应用不同接口请求
+
+        // instance 不是axios 的实例 因为instance 是函数(可做函数对象)
+        const instance = axios.create({
+            baseURL: 'http://localhost:3000',
+            timeout: 10000
+        })
+
+        instance({
+            url: '/posts/6',
+            method: 'PUT',
+            data:{
+                title: 'abc',
+                author: 'OH MY GOD'
+            }
+        })
+
+    </script>
+</body>
+</html>
