@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="get()">get</button>
+    <button onclick="post()">post</button>
+    <button onclick="put()">put</button>
+    <button onclick="remove()">delete</button>
+    <!-- 用Promise + XHR 封装ajax 函数 -->
+    <script>
+        function axios({
+            url,
+            method='GET',
+            params={},
+            data={}
+        }) {
+            return new Promise((resolve,reject) => {
+                // 准备query 参数 {a:1,b:2} => a=1&b=2
+                let queryStr = '';
+                // Object.keys 将对象遍历变为数组
+                Object.keys(params).forEach(key => {
+                    queryStr += `&${key}=${params[key]}`
+                })
+
+                if (queryStr) {// 指定param 才能调用
+                    queryStr = queryStr.substring(1)
+
+                    url += "?" + queryStr;
+                }
+                
+
+                // 创建XHR 对象
+                const XHR = new XMLHttpRequest();
+                // 绑定监听
+                XHR.onreadystatechange = function() {
+                    const {readyState,status,statusText} = XHR;
+                    if (readyState !== 4) {
+                        return
+                    }
+
+                    if (status >= 200 && status < 300) {
+                        // 封装response 
+                        const response = {
+                            data: JSON.parse(XHR.response), // 文本变为json
+                            status,
+                            statusText 
+                        }
+                        resolve(response)
+                    } else {
+                        reject(new Error('reqeust error status is '+ status))
+                    }
+
+
+                }
+
+                // 初始化 true(异步) false(同步) 可写可不写
+                XHR.open(method,url,true);
+
+                // 发送请求
+                if (method === 'POST' || method === 'PUT') {
+                    XHR.setRequestHeader('Content-Type','application/json;charset=utf-8')
+                    XHR.send(JSON.stringify(data));
+                } else {
+                    XHR.send()
+                }
+            })
+        }
+    </script>
+    <script>
+        function get() {
+            axios({
+                // method: 'GET',
+                url: 'http://localhost:3000/posts', // 数据包含json // 完整写法 http://localhost:3000/posts/1 上面的url 得到的是json 格式的数据(params 写法)
+                // 查询单个
+                params: { // 这个是posts?id=1 的unlencoded (query)写法
+                    id: '1'
+                }
+            }).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function post() {
+            // 页面会刷新(运行在服务器)
+            axios({
+                method: 'POST',
+                url: 'http://localhost:3000/posts', // 数据包含json
+                data: {
+                    title: '123465',
+                    author: 'w'
+                }
+            }).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function put() {
+            axios({
+                method: 'PUT',
+                url: 'http://localhost:3000/posts/3',
+                data: {
+                    title: '123',
+                    author: 'wjs'
+                }
+            }).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function remove() {
+            axios({
+                method: 'DELETE',
+                url: 'http://localhost:3000/posts/3',
+                params: {
+                    title: 'xxx'
+                }
+            }).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+    </script>
+</body>
+</html>

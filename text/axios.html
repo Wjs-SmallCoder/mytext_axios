@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <button onclick="get()">get</button>
+    <button onclick="post()">post</button>
+    <button onclick="put()">put</button>
+    <button onclick="remove()">delete</button>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.js"></script>
+    <script>
+        function get() {
+            axios({
+                // method: 'GET',
+                url: 'http://localhost:3000/posts', // 数据包含json // 完整写法 http://localhost:3000/posts/1 上面的url 得到的是json 格式的数据(params 写法)
+                // 查询单个
+                params: { // 这个是posts?id=1 的unlencoded (query)写法
+                    id: '1'
+                }
+            }).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function post() {
+            // 页面会刷新(运行在服务器)
+            axios({
+                method: 'POST',
+                url: 'http://localhost:3000/posts', // 数据包含json
+                data: {
+                    title: '123465',
+                    author: 'w'
+                }
+            }).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function put() {
+            axios({
+                method: 'PUT',
+                url: 'http://localhost:3000/posts/2',
+                data: {
+                    title: '123',
+                    author: 'wjs'
+                }
+            }).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function remove() {
+            axios({
+                method: 'DELETE',
+                url: 'http://localhost:3000/posts/2'
+            }).then(
+                response => {
+                    console.log(response.data,response.status,response.statusText)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+    </script>
+</body>
+</html>
