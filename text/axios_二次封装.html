@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="https://cdn.bootcdn.net/ajax/libs/nprogress/0.2.0/nprogress.css" rel="stylesheet">
+</head>
+<body>
+    <button onclick="get()">获取文章</button>
+    <button onclick="post()">添加文章</button>
+    <script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <!-- nprogress 轻量级进度条 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/nprogress/0.2.0/nprogress.js"></script>
+     <!-- 转化 将对象变为urlencoded 格式 -->
+    <script src="https://cdn.bootcdn.net/ajax/libs/qs/6.10.1/qs.min.js"></script>
+        <!-- // 统一进行请求配置
+        // 请求过程loading 显示
+        // 请求体参数用urlencoded 传递
+        // 请求成功value 不是response 而是response.data(自定义)
+        // 请求失败统一提示 -->
+        <script>
+            // console.log(Qs)
+            const instance = axios.create({
+                baseURL: 'http://localhost:4000'
+            })
+
+            // 请求拦截器
+            instance.interceptors.request.use((config) => {
+                // 显示
+                NProgress.start();
+                // 使用将对边变为urlencoded
+                if(config.data instanceof Object) { // 原本是对象，将data 变为urlencoded
+                config.data = Qs.stringify(config.data)
+                }
+                return config
+            })
+
+            // 响应拦截器
+            instance.interceptors.response.use(
+                response => {
+                    // 隐藏
+                    NProgress.done();
+                    return response.data
+                },
+                error => {
+                    NProgress.done();
+                    // 统一错误处理
+                    // throw error
+                    alert('请求出错' + error.message)
+                    return new Promise(() => {}) // 返回一个pedding 的promise 中断promise 链
+                }
+            )
+
+        </script>
+        <script>
+            function get() {
+                instance.get('/get').then(
+                    result => {
+                        console.table(result)
+                    }
+                    // error => {
+                    //     alert(error.message)
+                    // }
+                )
+            }
+
+            // 不使用then 用async await 
+            async function post() {
+                const result = await instance.post('/get',{name: '3',age: '3'})
+                console.table(result)
+                // .then(
+                //     result => {
+                //         console.table(result)
+                //     })
+            }
+        </script>
+
+
+
+        <!-- 基本 -->
+    <!-- <script>
+        const instance = axios.create({
+            baseURL: 'http://localhost:4000'
+        })
+    </script>
+    <script>
+        
+        function get() {
+            instance.get('/get').then(
+                response => {
+                    const result = response.data
+                    console.table(result)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+
+        function post() {
+            instance.post('/get',{
+                name: '3',
+                age: '3'
+            }).then(
+                response => {
+                    const result = response.data
+                    console.table(result)
+                },
+                error => {
+                    alert(error.message)
+                }
+            )
+        }
+    </script> -->
+</body>
+</html>
